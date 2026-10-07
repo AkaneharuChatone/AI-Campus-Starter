@@ -76,15 +76,13 @@ def hash_credential(raw_secret: str, salt: str = HASH_SALT) -> str:
 
 
 def deduplicate_records(records: list) -> list:
-    """Procedural sequential deduplication maintaining insertion order."""
+    """O(N) sequential deduplication maintaining insertion order using a seen set (O(1) lookup)."""
+    seen_ids = set()
     unique_items = []
     for item in records:
-        is_duplicate = False
-        for u in unique_items:
-            if u.get("id") == item.get("id"):
-                is_duplicate = True
-                break
-        if not is_duplicate:
+        item_id = item.get("id")
+        if item_id not in seen_ids:
+            seen_ids.add(item_id)
             unique_items.append(item)
     return unique_items
 
